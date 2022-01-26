@@ -124,8 +124,8 @@ Public instance variables can be access directly as well
 		}
 		Vehicle(string newName, string newMake)
 		{
-			make = newMake;
-			name = newName;
+			this->make = newMake;
+			this->name = newName;
 		}
 
 		void drive()
@@ -161,8 +161,8 @@ Vehicle.h
 		}
 		Vehicle(string newName, string newMake)
 		{
-			make = newMake;
-			name = newName;
+			this->make = newMake;
+			this->name = newName;
 		}
 
 		void drive()
@@ -205,9 +205,9 @@ Constructors can be used to create objects from class
 	
 		Vehicle(string newName, string newType, string newColor)
 		{
-			name = newName;
-			type = newType;
-			color = newColor;
+			this->name = newName;
+			this->type = newType;
+			this->color = newColor;
 		}
 
 		void showDetails()
@@ -238,9 +238,9 @@ Classes are by default private
 
 		Vehicle(string newName, string newType, string newColor)
 		{
-			name = newName;
-			type = newType;
-			color = newColor;
+			this->name = newName;
+			this->type = newType;
+			this->color = newColor;
 		}
 
 		void showDetails()
