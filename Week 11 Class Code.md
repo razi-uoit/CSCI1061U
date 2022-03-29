@@ -161,7 +161,7 @@ Shallow Copy works great if heap memory is not included for any of the instance 
 			x = 0;
 			y = 0;
 		}
-		Point(int x, int y)
+		void setValues(int x, int y)
 		{
 			this->x = x;
 			this->y = y;
