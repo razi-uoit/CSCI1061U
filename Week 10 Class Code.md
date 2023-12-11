@@ -1,4 +1,4 @@
-# Week 10 Class Code: Function Templates, Lambda Functions and Function Pointers
+# Week 11 Class Code: Function Templates, Lambda Functions and Function Pointers
 
 Class templates help in writing classes for multiple data types. However, sometimes you dont want to write generic class but generic functions and hence can use function templates.
 ```
