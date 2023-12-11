@@ -1,9 +1,8 @@
 # Week 4 Class Code: Operator Overloading and Friend Functions
 
+1. Operator overloading is used to use an operator for performing many functions. For example, a '+' operators is used to add int and double
 
-Operator overloading is used to use an operator for performing many functions. For example, a '+' operators is used to add int and double
-
-* Adding two integers
+	adding two integers
 ```
 	#include<iostream>
 	#include<string>
@@ -19,7 +18,7 @@ Operator overloading is used to use an operator for performing many functions. F
 		return 0;
 	}
 ```
-* Adding two doubles
+	adding two doubles
 ```
 	#include<iostream>
 	#include<string>
@@ -35,7 +34,7 @@ Operator overloading is used to use an operator for performing many functions. F
 		return 0;
 	}
 ```
-* Concatenating two strings
+2. '+' operator is also overloaded with an additional functionality of concatenating two strings
 ```
 	#include<iostream>
 	#include<string>
@@ -54,7 +53,7 @@ Operator overloading is used to use an operator for performing many functions. F
 		return 0;
 	}
 ```
-Overloading `<<` operator to display objects on the console
+3. Overloading << operator to display objects on the console
 ```
 	class Vehicle
 	{
@@ -91,178 +90,334 @@ Overloading `<<` operator to display objects on the console
 
 		return 0;
 	}
-```
 
-
-Operators as member functions
 ```
+4. Overloading == operator for objects
+```
+	#include <iostream>
+	using namespace std;
+
 	class Vehicle
 	{
-	private: 
-		string name;
-		int kms;
-	public:
-		Vehicle(string name, int kms)
-		{
-			this->name = name;
-			this->kms = kms;
-		}
-		string getName()
-		{
-			return name;
-		}
-		int getKms()
-		{
-			return kms;
-		}
-	
+	    private:
+	    string name;
+	    int kms;
+    
+    	public:
+	    Vehicle(string name, int kms)
+	    {
+        	this->name = name;
+	        this->kms = kms;
+	    }
+	    string getName()
+	    {
+        	return this->name;
+	    }
+	    int getKMs()
+	    {
+        	return this->kms;
+	    }
+	    void display()
+	    {
+        	cout <<"Name: "<<this->name<<endl;
+	        cout <<"KMs: "<<this->kms<<endl;
+	    }
 	};
 
-	class Collections
+	bool operator==(Vehicle &v1, Vehicle &v2)
 	{
-	public:	
-		vector<Vehicle> v;
-
-		void operator+=(Vehicle& vehicle)
-		{
-			v.push_back(vehicle);
-		}
-	};
-
-	int main()
-	{
-		Vehicle car1 = Vehicle("Toyota RAV4", 1234);
-		Vehicle car2 = Vehicle("Honda CRV", 234);
-		Collections collections;
-
-		collections += car1;
-		collections += car2;
-
-		return 0;
-	}
-```
-Operators as Global functions
-```
-	class Vehicle
-	{
-		private: 
-			string name;
-			int kms;
-	public:
-		Vehicle(string name, int kms)
-		{
-			this->name = name;
-			this->kms = kms;
-		}
-		string getName()
-		{
-			return name;
-		}
-		int getKms()
-		{
-			return kms;
-		}
-
-	};
-
-	class Collections
-	{
-	public:
-		vector<Vehicle> v;
-
-		void operator+=(Vehicle& vehicle)
-		{
-			v.push_back(vehicle);
-		}
-	};
-
-	ostream& operator<<(ostream& output, Collections& collection)
-	{
-		for (int i = 0; i < collection.v.size(); i++)
-		{
-			output << collection.v[i].getName() << endl;
-			output << collection.v[i].getKms() << endl;
-		}
-		return output;
+	    if (v1.getName() == v2.getName() && v1.getKMs() == v2.getKMs())
+	    {
+        	return true;
+	    }
+	    return false;
 	}
 
 	int main()
 	{
-		Vehicle car1 = Vehicle("Toyota RAV4", 1234);
-		Vehicle car2 = Vehicle("Honda CRV", 234);
-		Collections collections;
-	
-		collections += car1;
-		collections += car2;
-		cout << collections;
-
-		return 0;
+	    Vehicle v1 = Vehicle("Toyota RAV4", 1234);
+	    Vehicle v2 = Vehicle("Honda CRV", 7890);
+    
+	    if (v1 == v1)
+	    {
+        	cout <<"Same Objects"<<endl;
+	    }
+	    else
+	    {
+        	cout <<"Different Objects"<<endl;
+	    }
+    
+	    return 0;
 	}
 ```
-Overloading Binary Operators (+, - etc)
+
+5. Operator as member functions
+```
+	#include <iostream>
+	using namespace std;
+
+	class Vehicle
+	{
+	    private:
+	    string name;
+	    int kms;
+    
+    	public:
+	    Vehicle(string name, int kms)
+	    {
+        	this->name = name;
+	        this->kms = kms;
+	    }
+	    string getName()
+	    {
+        	return this->name;
+	    }
+	    int getKMs()
+	    {
+        	return this->kms;
+	    }
+	    void display()
+	    {
+        	cout <<"Name: "<<this->name<<endl;
+	        cout <<"KMs: "<<this->kms<<endl;
+	    }
+	    bool operator==(Vehicle &v2)
+	    {
+        	if (this->name == v2.name && this->kms == v2.kms)
+	        {
+        	    return true;
+	        }
+        	return false;
+	    }
+	};
+
+	int main()
+	{
+	    Vehicle v1 = Vehicle("Toyota RAV4", 1234);
+	    Vehicle v2 = Vehicle("Honda CRV", 7890);
+    
+	    if (v1 == v2)
+	    {
+        	cout <<"Same Objects"<<endl;
+	    }
+	    else
+	    {
+        	cout <<"Different Objects"<<endl;
+	    }
+    
+    	return 0;
+	}
+```
+6. Overloading += as a member function
+```
+	#include <iostream>
+	using namespace std;
+
+	class Vehicle
+	{
+	    private:
+	    string name;
+	    int kms;
+	    int passengers;
+    
+    	public:
+	    Vehicle(string name, int kms, int passengers)
+	    {
+        	this->name = name;
+	        this->kms = kms;
+        	this->passengers = passengers;
+	    }
+	    string getName()
+	    {
+        	return this->name;
+	    }
+	    int getKMs()
+	    {
+        	return this->kms;
+	    }
+	    int getPassengers()
+	    {
+        	return this->passengers;
+	    }
+	    void display()
+	    {
+        	cout <<"Name: "<<this->name<<endl;
+	        cout <<"KMs: "<<this->kms<<endl;
+	    }
+	    bool operator==(Vehicle &v2)
+	    {
+        	if (this->name == v2.name && this->kms == v2.kms)
+	        {
+        	    return true;
+	        }
+	        return false;
+	    }
+	    Vehicle& operator+=(int i)
+	    {
+        	this->passengers = this->passengers + i;
+	        return *this;
+        
+	    }
+	};
+
+	ostream& operator<<(ostream& out, Vehicle& vehicle)
+	{
+	    out <<"Name: "<<vehicle.getName()<<endl;
+	    out <<"KMs: "<<vehicle.getKMs()<<endl;
+	    out <<"Passengers: "<<vehicle.getPassengers()<<endl;
+	    return out;
+	}
+
+	int main()
+	{
+	    Vehicle v1 = Vehicle("Toyota RAV4", 1234, 5);
+	    cout <<v1<<endl;
+	    v1+=2;
+	    cout <<v1<<endl;
+    
+	    return 0;
+	}
+```
+
+7. In order to make ostream& operator<< as a member function, you need to use an indirect method as ostream& operator<< cannot write to ostream object.
 ```
 	#include<iostream>
-	#include<string>
 
 	using namespace std;
 
-	class Point
+	class Vehicle
 	{
-	private:	
-		int x, y;
-	public:
-		Point()
-		{
-			x = 0;
-			y = 0;
-		}
-		Point(int x, int y)
-		{
-			this->x = x;
-			this->y = y;
-		}
-		int getX()
-		{
-			return x;
-		}
-		int getY()
-		{
-			return y;
-		}
-		void setX(int x)
-		{
-			this->x = x;
-		}
-		void setY(int y)
-		{
-			this->y = y;
-		}
+	    private:
+	    string name;
+	    int kms;
+	    int passengers;
+    
+    	public:
+	    Vehicle(string name, int kms, int passengers)
+	    {
+	        this->name = name;
+        	this->kms = kms;
+	        this->passengers = passengers;
+	    }
 
-		Point operator+(Point& point)
-		{
-			Point temp;
-			temp.x = this->x + point.x;
-			temp.y = this->y + point.y;
-
-			return temp;
-		}
-
+   	string getName()
+	{
+	        return this->name;
+	}
+	int getKMs()
+    	{
+        	return this->kms;
+	}
+    	int getPassengers()
+    	{
+        	return this->passengers;
+    	}
+    	bool operator==(Vehicle& v2)
+    	{
+        	if (this->name == v2.name && this->kms == v2.kms)
+        	{
+	           return true;
+        	}
+        	return false;
+    	}
+    	Vehicle& operator+=(int i)
+    	{
+        	this->passengers = this->passengers + i;
+        	return *this;
+    	}
+    	ostream& display(ostream& out)
+    	{
+        	out <<"Name: "<<this->name<<endl;
+        	out <<"KMs: "<<this->kms<<endl;
+        	out <<"Passengers: "<<this->passengers<<endl;
+        	return out;
+    	}
 	};
 
+	ostream& operator<<(ostream& out, Vehicle& v)
+	{   
+    		return v.display(out);
+	}
 
 	int main()
 	{
-		Point p1 = Point(4, 5);
-		Point p2 = Point(6, 7);
-	
-		Point result = p1 + p2;
-	
-		cout << "(" << p1.getX() << "," << p1.getY() << ") + (" << p2.getX() << "," << p2.getY() << ")= (" << result.getX() << "," << 		result.getY() << ")" << endl;
-	
-		return 0;
+    		Vehicle v1 = Vehicle("Toyota RAV4", 1234, 5);
+    
+    		cout <<v1;
+    	        return 0;
+	}
+
+```
+7. Overloading Binary Operators (+, - etc)
+```
+	#include <iostream>
+
+	using namespace std;
+
+	class Numbers
+	{
+	    private:
+	    int * numbers;
+	    int size;
+    
+    	public:
+	    Numbers(int *arr, int size)
+	    {
+        	this->size = size;
+	        this->numbers = new int[this->size];
+        
+        	for(int i=0; i<this->size; i++)
+	        {
+        	    this->numbers[i] = arr[i];
+	        }
+	    }
+	    ~Numbers()
+	    {
+        	delete[] this->numbers;
+	    }
+	    void display()
+	    {
+        	for (int i=0; i<this->size;i++)
+	        {
+        	    cout <<this->numbers[i]<<"\t";
+	        }
+	        cout<<endl;
+	    }
+	    void operator+(Numbers& n)
+	    {
+        	int *temp = new int[this->size];
+	        for (int i=0; i<this->size;i++)
+        	{
+	            temp[i] = this->numbers[i] + n.numbers[i];
+        	}
+	        for (int i=0; i<this->size;i++)
+        	{
+	            cout <<temp[i]<<"\t";
+        	}
+	        delete[] temp;
+	    }
+	};
+
+	int main()
+	{
+	    int arr[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    
+	    int size = sizeof(arr)/sizeof(arr[0]);
+    
+	    Numbers n1 = Numbers(arr, size);
+	    Numbers n2 = Numbers(arr, size);
+    
+            n1.display();
+	    
+	    n2.display();
+    
+	    n1 + n2;
+    
+	    return 0;
 	}
 ```
-Friend functions are used to allow friends of the class to use its private and protected members.
+
+8. Friend functions are used to allow friends of the class to use its private and protected members.
 ```
 	class Vehicle
 	{
@@ -305,4 +460,47 @@ Friend functions are used to allow friends of the class to use its private and p
 
 		return 0;
 	}
+```
+9. Friend Functions can be handy with operator overloading
+```
+	class Vehicle
+	{
+	private:
+		string name;
+		int kms;
+		int OBU;
+	public:
+		Vehicle(string name, int kms, int OBU)
+		{
+			this->name = name;
+			this->kms = kms;
+			this->OBU = OBU;
+		}
+		string getName()
+		{
+			return name;
+		}
+		int getKms()
+		{
+			return kms;
+		}
+		friend ostream& operator<<(ostream& output, Vehicle& vehicle);
+	};
+
+	ostream& operator<<(ostream& output, Vehicle& vehicle)
+	{
+		output << "Name: " << vehicle.getName() << endl;
+		output << "Kms: " << vehicle.getKms() << endl;
+		output << "OBU: " << vehicle.OBU << endl;
+		return output;
+	}
+	int main()
+	{
+		Vehicle car1 = Vehicle("Toyota RAV4", 1234, 12);
+		Vehicle car2 = Vehicle("Honda CRV", 5678, 34);
+		cout << car1 << car2;
+	
+		return 0;
+	}
+
 ```
