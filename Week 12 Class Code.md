@@ -1,4 +1,4 @@
-# Week 12 Class Code: Exception Handling and Modular Programming
+# Week 5 Class Code: Exception Handling and Modular Programming
 
 The program below would break because of dividing by 0
 ```
