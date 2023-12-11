@@ -1,6 +1,6 @@
 # Week 5 Class Code: Exception Handling and Modular Programming
 
-The program below would break because of dividing by 0
+1. The program below would break because of dividing by 0
 ```
 	#include <iostream>
 	using namespace std;
@@ -20,7 +20,7 @@ The program below would break because of dividing by 0
 		return 0;
 	}
 ```
-To fix the above program, we can use Exception Handling
+2. To fix the above program, we can use Exception Handling
 ```
 	#include <iostream>
 	using namespace std;
@@ -60,7 +60,7 @@ To fix the above program, we can use Exception Handling
 		return 0;
 	}
 ```
-You can also throw an exception code as integer
+	You can also throw an exception code as integer
 ```
 	#include <iostream>
 	using namespace std;
@@ -105,7 +105,7 @@ You can also throw an exception code as integer
 	return 0;
 	}
 ```
-You can catch exceptions in general as well
+3. You can catch exceptions in general as well
 ```
 	#include <iostream>
 	using namespace std;
@@ -155,7 +155,9 @@ You can catch exceptions in general as well
 		return 0;
 	}
 ```
-Out of Range Exception: The code below will crash the program by throwing an exception
+3. Out of Range Exception
+
+	The code below will crash the program by throwing an exception
 ```
 	#include <iostream>
 	#include <vector>
@@ -169,7 +171,7 @@ Out of Range Exception: The code below will crash the program by throwing an exc
 		return 0;
 	}
 ```
-Above can be fixed in general using below code:
+	Above can be fixed in general using below code:
 ```
 	#include <iostream>
 	#include <vector>
@@ -191,7 +193,7 @@ Above can be fixed in general using below code:
 		return 0;
 	}
 ```
-Uptil now, we have been programming like below:
+4. Uptil now, we have been programming like below:
 ```
 	#include <iostream>
 	using namespace std;
@@ -233,9 +235,9 @@ Uptil now, we have been programming like below:
 		return 0;
 	}
 ```
-To use modular programming, we program modules.
+	To use modular programming, we program modules.
 
-`Vehicle.h`
+	`Vehicle.h`
 ```
 	#pragma once
 	#include <iostream>
@@ -253,7 +255,7 @@ To use modular programming, we program modules.
 		void display();
 	};
 ```
-`Vehicle.cpp`
+	`Vehicle.cpp`
 ```
 	#include "Vehicle.h"
 
@@ -280,7 +282,7 @@ To use modular programming, we program modules.
 		cout << "Name: " << this->name << ", KMs: " << this->kms << endl;
 	}
 ```
-`main.cpp`
+	`main.cpp`
 ```
 	#include "Vehicle.h"
 
@@ -290,290 +292,526 @@ To use modular programming, we program modules.
 		vehicle.display();
 		return 0;
 	}
-```
-Inheritance would work in the same fashion
 
-`Vehicle.h`
 ```
-	#pragma once
-	#include <iostream>
+Converting above program from string to dynamic character array
+
+	`Vehicle.h`
+```
+	#include<iostream>
+	using namespace std;
+
 	class Vehicle
 	{
-	private:
-		std::string name;
-		int kms;
-	public:
-		Vehicle();
-		Vehicle(std::string name, int kms);
-		std::string getName();
-		int getKms();
-		void display();
+	    private:
+	    char * name;
+	    int kms;
+    
+    	public:
+	    Vehicle(const char * name, int kms);
+	    void display();
+	    char * getName();
+	    int getKMs();
+	    ~Vehicle();
 	};
 ```
-`Vehicle.cpp`
+	`Vehicle.cpp`
 ```
 	#include "Vehicle.h"
+	#include<cstring>
 
-	Vehicle::Vehicle()
-	{
-		name = "";
-		kms = 0;
-	}
-	Vehicle::Vehicle(std::string name, int kms)
-	{
-		this->name = name;
-		this->kms = kms;
-	}
-	std::string Vehicle::getName()
-	{
-		return this->name;
-	}
-	int Vehicle::getKms()
-	{
-		return this->kms;
+	Vehicle::Vehicle(const char * name, int kms)
+	{	
+	    int size = strlen(name);
+	    this->name = new char[size + 1];
+    
+    	    for (int i=0; i<size; i++)
+	    {
+        	this->name[i] = name[i];
+	    }
+    
+            this->kms = kms;
 	}
 	void Vehicle::display()
 	{
-		std::cout << "Name: " << this->name << ", KMs: " << this->kms << std::endl;
+	    cout <<"Name: "<<this->name<<endl;
+	    cout <<"Kms: "<<this->kms<<endl;
+	}
+	char * Vehicle::getName()
+	{
+	    return this->name;
+	}
+	int Vehicle::getKMs()
+	{
+	    return this->kms;
+	}
+	Vehicle::~Vehicle()
+	{
+	    delete[] this->name;
 	}
 ```
-`Car.h`
+	`main.cpp`
 ```
 	#include "Vehicle.h"
 
-	class Car : public Vehicle
+	int main()
 	{
-	private:
-		std::string color;
-	public:
-		Car(std::string name, int kms, std::string color);
-		void goToPicnic();
+	    Vehicle vehicle = Vehicle("Toyota", 1234);
+	    vehicle.display();
+	   return 0;
+	}
+```
+5. Modular Programming helps keeping global functions as well:
+
+	`Vehicle.h`
+```
+	#include<iostream>
+	using namespace std;
+
+	class Vehicle
+	{
+	    private:
+	    char * name;
+	    int kms;
+    
+    	public:
+	    Vehicle(const char * name, int kms);
+	    void display();
+	    char * getName();
+	    int getKMs();
+	    ~Vehicle();
 	};
+
+	void display(Vehicle *vehicles, int size);
 ```
-`Car.cpp`
+
+	`Vehicle.cpp`
 ```
-	#include "Car.h"
+	#include "Vehicle.h"
+	#include<cstring>
 
-	Car::Car(std::string name, int kms, std::string color) : Vehicle(name, kms)
+	Vehicle::Vehicle(const char * name, int kms)
 	{
-		this->color = color;
+	    int size = strlen(name);
+	    this->name = new char[size + 1];
+    
+	   strcpy(this->name, name);
+    
+    	this->kms = kms;
 	}
-	void Car::goToPicnic()
+	void Vehicle::display()
 	{
-		std::cout << "Going to Picnic" << std::endl;
+	    cout <<"Name: "<<this->name<<endl;
+	    cout <<"Kms: "<<this->kms<<endl;
+	}
+	char * Vehicle::getName()
+	{
+	    return this->name;
+	}
+	int Vehicle::getKMs()
+	{
+	    return this->kms;
+	}
+	Vehicle::~Vehicle()
+	{
+	    delete[] this->name;
 	}
 
-	main.cpp
+	void display(Vehicle *vehicles, int size)
+	{   
+	    for (int i=0; i<size; i++)
+	    {
+        	cout <<"Name: "<<vehicles[i].getName()<<endl;
+	        cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
+        	cout <<"******************************"<<endl;
+	    }
+ 
+	}
+```
 
-	#include "Car.h"
+	`main.cpp`
+```
+	#include "Vehicle.h"
 
 	int main()
 	{
-		Vehicle vehicle = Vehicle("Toyota Rav4", 1234);
-		vehicle.display();
-
-		Car car = Car("Honda CRV", 4567, "Red");
-		car.display();
-		return 0;
-	}	
+	    Vehicle vehicles[5] = {
+	        Vehicle("Toyota", 123),
+	        Vehicle("Honda", 132),
+	        Vehicle("Audi", 789),
+        	Vehicle("BMW", 222),
+	        Vehicle("Tesla", 777),
+    
+    	};
+    
+    	int size = sizeof(vehicles)/sizeof(vehicles[0]);
+    
+	    display(vehicles, size);
+	    return 0;
+	}
 ```
-Operator Overloading would work in a similar manner
-
-`Vehicle.h`
+The above program can be modified to store vehicle array in the heap memory as follows:
 ```
-	#pragma once
-	#include <iostream>
+	#include "Vehicle.h"
+
+	int main()
+	{
+	    Vehicle *vehicles = new Vehicle[5]
+	    {
+		        Vehicle("Toyota", 123),
+	        	Vehicle("Honda", 132),
+		        Vehicle("Audi", 789),	
+        		Vehicle("BMW", 222),
+	        	Vehicle("Tesla", 777),
+	    };
+    
+    	display(vehicles, 5);
+    
+    	delete[] vehicles;
+	    return 0;
+	}
+
+```
+6. Operator Overloading would work in a similar manner
+
+	`Vehicle.h`
+```
+	#include<iostream>
+	using namespace std;
+
 	class Vehicle
 	{
-	protected:
-		std::string name;
-		int kms;
-	public:
-		Vehicle();
-		Vehicle(std::string name, int kms);
-		std::string getName();
-		int getKms();
-		void setKms(int kms);
-		void display();
+	    private:
+	    char * name;
+	    int kms;
+    
+    	public:
+	    Vehicle(const char * name, int kms);
+	    void display();
+	    char * getName();
+	    int getKMs();
+	    ~Vehicle();
 	};
 
-	Vehicle& operator+=(Vehicle& v, int value);
+	void display(Vehicle *vehicles, int size);
+	ostream& operator<<(ostream& out, Vehicle &vehicle);
+```
+	`Vehicle.cpp`
+```
+	#include "Vehicle.h"
+	#include<cstring>
+
+	Vehicle::Vehicle(const char * name, int kms)
+	{
+	    int size = strlen(name);
+	    this->name = new char[size + 1];
+    
+   	strcpy(this->name, name);
+    
+	    this->kms = kms;
+	}
+	void Vehicle::display()
+	{
+	    cout <<"Name: "<<this->name<<endl;
+	    cout <<"Kms: "<<this->kms<<endl;
+	}
+	char * Vehicle::getName()
+	{
+	    return this->name;
+	}
+	int Vehicle::getKMs()
+	{
+	    return this->kms;
+	}
+	Vehicle::~Vehicle()
+	{
+	    delete[] this->name;
+	}
+
+	void display(Vehicle *vehicles, int size)
+	{   
+	    for (int i=0; i<size; i++)
+	    {
+	        cout <<"Name: "<<vehicles[i].getName()<<endl;
+        	cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
+	        cout <<"******************************"<<endl;
+	    }
+    
+	}
+
+	ostream& operator<<(ostream& out, Vehicle &vehicle)
+	{
+	    cout <<"Name: "<<vehicle.getName()<<endl;
+	    cout <<"Kms: "<<vehicle.getKMs()<<endl;
+	    return out;
+	}
+```	
+
+	`main.cpp`
+```
+	#include "Vehicle.h"
+
+	int main()
+	{
+    
+	 	Vehicle vehicle = Vehicle("Toyota", 123);
+	    cout <<vehicle<<endl;
+	    return 0;
+	}
+```
+
+	Updating above program to use dynamic arrays of Vehicle with operator overloading
+
+	`Vehicle.h`
+```
+	#include<iostream>
+	using namespace std;
+
+	class Vehicle
+	{
+	    private:
+	    char * name;
+	    int kms;
+    
+    	public:
+	    Vehicle(const char * name, int kms);
+	    void display();
+	    char * getName();
+	    int getKMs();
+	    ~Vehicle();
+	};
+
+	void display(Vehicle *vehicles, int size);
+	ostream& operator<<(ostream& out, Vehicle *vehicles);
+
 
 	Vehicle.cpp
 
 	#include "Vehicle.h"
+	#include<cstring>
 
-	Vehicle::Vehicle()
+	Vehicle::Vehicle(const char * name, int kms)
 	{
-		name = "";
-		kms = 0;
-	}
-	Vehicle::Vehicle(std::string name, int kms)
-	{
-		this->name = name;
-		this->kms = kms;
-	}
-	std::string Vehicle::getName()
-	{
-		return this->name;
-	}
-	int Vehicle::getKms()
-	{
-		return this->kms;
+	    int size = strlen(name);
+	    this->name = new char[size + 1];
+    
+	   strcpy(this->name, name);
+    
+	    this->kms = kms;
 	}
 	void Vehicle::display()
 	{
-		std::cout << "Name: " << this->name << ", KMs: " << this->kms << std::endl;
+	    cout <<"Name: "<<this->name<<endl;
+	    cout <<"Kms: "<<this->kms<<endl;
 	}
-	void Vehicle::setKms(int kms)
+	char * Vehicle::getName()
 	{
-		this->kms = kms;
+	    return this->name;
 	}
-
-	Vehicle& operator+=(Vehicle& V, int value)
+	int Vehicle::getKMs()
 	{
-		V.setKms(V.getKms() + value);
-		return V;
-
+	    return this->kms;
 	}
-```
-No change in Car.h and Car.cpp
-
-`main.cpp`
-```
-	#include "Car.h"
-
-	int main()
+	Vehicle::~Vehicle()
 	{
-		Vehicle vehicle = Vehicle("Toyota Rav4", 1234);
-		vehicle.display();
-
-		Car car = Car("Honda CRV", 4567, "Red");
-		car.display();
-
-		vehicle += 1;
-		vehicle.display();
-		return 0;
+	    delete[] this->name;
 	}
-```
-Namespaces are used in a similar manner
 
-`Vehicle.h`
-```
-	#pragma once
-	#include <iostream>
+	void display(Vehicle *vehicles, int size)
+	{   
+	    for (int i=0; i<size; i++)
+	    {
+        	cout <<"Name: "<<vehicles[i].getName()<<endl;
+	        cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
+        	cout <<"******************************"<<endl;
+	    }
+    
+	}
 
-	namespace ontariotech
+	ostream& operator<<(ostream& out, Vehicle *vehicles)
 	{
-		class Vehicle
-		{
-		protected:
-			std::string name;
-			int kms;
-		public:
-			Vehicle();
-			Vehicle(std::string name, int kms);
-			std::string getName();
-			int getKms();
-			void setKms(int kms);
-			void display();
-		};
-
-		Vehicle& operator+=(Vehicle& v, int value);
+	    for (int i=0; i<5; i++)
+	    {
+	        out <<"Name: "<<vehicles[i].getName()<<endl;
+        	out <<"KMs: "<<vehicles[i].getKMs()<<endl;
+	        out <<"******************************"<<endl;
+	    }
+	    return out;
 	}
 ```
-`Vehicle.cpp`
+	`main.cpp`
+```
+	#include "Vehicle.h"
+	#include<cstring>
+
+	Vehicle::Vehicle(const char * name, int kms)
+	{
+	    int size = strlen(name);
+	    this->name = new char[size + 1];
+    
+	   strcpy(this->name, name);
+    
+	    this->kms = kms;
+	}
+	void Vehicle::display()
+	{
+	    cout <<"Name: "<<this->name<<endl;
+	    cout <<"Kms: "<<this->kms<<endl;
+	}
+	char * Vehicle::getName()
+	{
+	    return this->name;
+	}
+	int Vehicle::getKMs()
+	{
+	    return this->kms;
+	}
+	Vehicle::~Vehicle()
+	{
+	    delete[] this->name;
+	}
+
+	void display(Vehicle *vehicles, int size)
+	{   
+	    for (int i=0; i<size; i++)
+	    {
+        	cout <<"Name: "<<vehicles[i].getName()<<endl;
+	        cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
+        	cout <<"******************************"<<endl;
+	    }
+    
+	}
+
+	ostream& operator<<(ostream& out, Vehicle *vehicles)
+	{
+	    for (int i=0; i<5; i++)
+	    {
+	        out <<"Name: "<<vehicles[i].getName()<<endl;
+        	out <<"KMs: "<<vehicles[i].getKMs()<<endl;
+	        out <<"******************************"<<endl;
+	    }
+	    return out;
+	}
+```
+7. Using operator overloading as member function
+
+	`Vehicle.h`
+```
+	#include<iostream>
+	using namespace std;
+
+	class Vehicle
+	{
+	    private:
+	    char * name;
+	    int kms;
+	    int passengers;
+    
+    	public:
+	    Vehicle(const char * name, int kms, int passengers);
+	    void display();
+	    char * getName();
+	    int getKMs();
+	    int getPassengers();
+	    Vehicle& operator+=(int);
+	    ~Vehicle();
+	};
+
+	void display(Vehicle *vehicles, int size);
+	ostream& operator<<(ostream& out, Vehicle *vehicles);
+```
+	`Vehicle.cpp`
+```
+	#include "Vehicle.h"
+	#include<cstring>
+
+	Vehicle::Vehicle(const char * name, int kms, int passengers)
+	{
+	    int size = strlen(name);
+	    this->name = new char[size + 1];
+    
+	   strcpy(this->name, name);
+    
+    	this->kms = kms;
+	    this->passengers = passengers;
+	}
+	void Vehicle::display()
+	{
+	    cout <<"Name: "<<this->name<<endl;
+	    cout <<"Kms: "<<this->kms<<endl;
+	}
+	char * Vehicle::getName()
+	{
+	    return this->name;
+	}
+	int Vehicle::getKMs()
+	{
+	    return this->kms;
+	}
+	int Vehicle::getPassengers()
+	{
+	    return this->passengers;
+	}
+	Vehicle::~Vehicle()
+	{
+	    delete[] this->name;
+	}
+	Vehicle& Vehicle::operator+=(int i)
+	{
+	    this->passengers += i;
+	    return *this;
+	}
+
+	void display(Vehicle *vehicles, int size)
+	{   
+	    for (int i=0; i<size; i++)
+	    {
+	        cout <<"Name: "<<vehicles[i].getName()<<endl;
+        	cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
+	        cout <<"Passengers: "<<vehicles[i].getPassengers()<<endl;
+        	cout <<"******************************"<<endl;
+	    }   
+	}
+
+	ostream& operator<<(ostream& out, Vehicle *vehicles)
+	{
+	    for (int i=0; i<5; i++)
+	    {
+	        out <<"Name: "<<vehicles[i].getName()<<endl;
+        	out <<"KMs: "<<vehicles[i].getKMs()<<endl;
+	        cout <<"Passengers: "<<vehicles[i].getPassengers()<<endl;
+        	out <<"******************************"<<endl;
+	    }
+	    return out;	
+	}
+```
+	`main.cpp`
 ```
 	#include "Vehicle.h"
 
-	namespace ontariotech
-	{
-		Vehicle::Vehicle()
-		{
-			name = "";
-			kms = 0;
-		}
-		Vehicle::Vehicle(std::string name, int kms)
-		{
-			this->name = name;
-			this->kms = kms;
-		}
-		std::string Vehicle::getName()
-		{
-			return this->name;
-		}
-		int Vehicle::getKms()
-		{
-			return this->kms;
-		}
-		void Vehicle::display()
-		{
-			std::cout << "Name: " << this->name << ", KMs: " << this->kms << std::endl;
-		}
-		void Vehicle::setKms(int kms)
-		{
-			this->kms = kms;
-		}
-
-		Vehicle& operator+=(Vehicle& V, int value)
-		{
-			V.setKms(V.getKms() + value);
-			return V;
-	
-		}
-	}
-```
-`Car.h`
-```
-	#include "Vehicle.h"
-
-	namespace ontariotech
-	{
-		class Car : public Vehicle
-		{
-		private:
-			std::string color;
-		public:
-			Car(std::string name, int kms, std::string color);
-			void goToPicnic();
-		};
-	}
-```
-`Car.cpp`
-```
-	#include "Car.h"
-
-	namespace ontariotech
-	{
-		Car::Car(std::string name, int kms, std::string color) : Vehicle(name, kms)
-		{
-			this->color = color;
-		}
-		void Car::goToPicnic()
-		{
-			std::cout << "Going to Picnic" << std::endl;
-		}
-	}
-```
-`main.cpp`
-```
-	#include "Car.h"
-	using namespace ontariotech;
 	int main()
 	{
-		Vehicle vehicle = Vehicle("Toyota Rav4", 1234);
-		vehicle.display();
-
-		Car car = Car("Honda CRV", 4567, "Red");
-		car.display();
-
-		vehicle += 1;
-		vehicle.display();
-		return 0;
-	}	
-```
-
-
-
-
+	    Vehicle *vehicles = new Vehicle[5]
+	    {
+	        Vehicle("Toyota", 123, 1),
+	        Vehicle("Honda", 132, 4),
+	        Vehicle("Audi", 789, 5),
+        	Vehicle("BMW", 222, 2),
+	        Vehicle("Tesla", 777, 3),
+	    };
+    
+    	cout <<vehicles<<endl;
+    
+	    for (int i=0; i<5; i++)
+	    {
+        	vehicles[i]+=2;
+	    }
+    
+    	cout <<"After incrementing..."<<endl;
+	    cout <<vehicles<<endl;
+    
+    	delete[] vehicles;
 	
+	    return 0;
+	}
+```
