@@ -1,4 +1,4 @@
-# Week 7 Class Code: Abstraction, Encapsulation, Inheritance and Polymorphism
+# Week 8 Class Code: Abstraction, Encapsulation, Inheritance and Polymorphism
 
 Sometimes similar code is required to be used in multiple classes.
 ```
