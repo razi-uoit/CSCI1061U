@@ -1,4 +1,4 @@
-# Week 8 Class Code: Namespaces, Templates and STLs
+# Week 10 Class Code: Namespaces, Templates and STLs
 A namespace is a declarative region that provides a scope to the identifiers (the names of types, functions, variables, etc) inside it. 
 
 Vehicle.h
