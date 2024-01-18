@@ -589,3 +589,105 @@ int main()
 }
 
 ```
+### Modifying the Numbers class by passing a vector as a parameter to the constructor
+```
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Numbers
+{
+    private:
+    vector<int> numbers;
+    
+    public:
+    Numbers(vector<int> n)
+    {
+        for (int i=0; i<5; i++)
+        {
+            numbers.push_back(n[i]);
+        }
+    }
+    
+    void display()
+    {
+        for (int i=0; i<5; i++)
+        {
+            cout <<numbers[i]<<"\t";
+        }
+        cout <<endl;
+    }
+    
+    int getMax()
+    {
+        int max = numbers[0];
+        for (int i=0; i<5; i++)
+        {
+            if (max < numbers[i])
+            {
+                max = numbers[i];
+            }
+        }
+        return max;
+    }
+    
+    int getMin()
+    {
+        int min = numbers[0];
+        for (int i=0; i<5; i++)
+        {
+            if (min > numbers[i])
+            {
+                min = numbers[i];
+            }
+        }
+        return min;
+    }
+    
+    int getSum()
+    {
+        int sum = 0;
+        for (int i=0; i<5; i++)
+        {
+            sum += numbers[i];
+        }
+        return sum;
+    }
+    
+    void search(int number)
+    {
+        for (int i=0; i<5;i++)
+        {
+            if (numbers[i] == number)
+            {
+                cout <<"Found"<<endl;
+                return;
+            }
+        }
+        cout <<"Not Found"<<endl;
+    }
+};
+
+int main()
+{
+    vector<int> numbers{1, 3, 5, 2, 4};
+    Numbers nums = Numbers(numbers);
+    nums.display();
+    
+    cout <<"Max: "<<nums.getMax()<<endl;
+    cout <<"Min: "<<nums.getMin()<<endl;
+    cout <<"Sum: "<<nums.getSum()<<endl;
+    nums.search(6);
+    return 0;
+}
+```
+### Vector can be passed by reference by updating the constructor as below:
+```
+    Numbers(vector<int> &n)
+    {
+        for (int i=0; i<5; i++)
+        {
+            numbers.push_back(n[i]);
+        }
+    }
+```
