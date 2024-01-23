@@ -159,7 +159,106 @@
 	    return 0;
 	}
 ```
-6. Working with Character arrays
+6. Let's create a Stack class using Dynamic Memory
+
+```
+#include <iostream>
+
+using namespace std;
+
+class Stack
+{
+    private:
+    int *stack;
+    int size;
+    int top;
+    
+    public:
+    Stack(int size)
+    {
+        this->top = -1;
+        this->size = size;
+        this->stack = new int[size];
+    }
+    bool isEmpty()
+    {
+        return this->top == -1;
+    }
+    bool isFull()
+    {
+        return this->top == this->size - 1;
+    }
+    void push(int n)
+    {
+        if (!isFull())
+        {
+            this->stack[++this->top] = n;
+        }
+        else
+        {
+            cout <<"Stack Full. Cannot push anymore elements"<<endl;
+        }
+    }
+    int pop()
+    {
+        if (!isEmpty())
+        {
+           this->top--;
+            return this->stack[top];
+        }
+        else
+        {
+            cout <<"Stack Empty. Cannot pop anymore elements"<<endl;
+        }
+    }
+    int getTopElement()
+    {
+        if (!isEmpty())
+        {
+            return this->stack[this->top];
+        }
+        else
+        {
+            cout <<"Stack Empty. Cannot get top element"<<endl;
+            return -1;
+        }
+    }
+    void display() 
+    {
+        if (!isEmpty()) 
+        {
+            for (int i = this->top; i >=0; i--) 
+            {
+                cout << stack[i] << " ";
+            }
+            cout << std::endl;
+        } 
+        else 
+        {
+            cout << "Stack is empty. Nothing to display." << std::endl;
+        }
+    }
+    
+};
+
+
+
+int main()
+{
+    Stack stack = Stack(5);
+    stack.push(10);
+    stack.push(20);
+    stack.push(30);
+    
+    stack.display();
+    
+    cout <<"Top Element: "<<stack.getTopElement()<<endl;
+
+    return 0;
+}
+```
+
+8. Working with Character arrays
 ```
 	#include<iostream>
 
