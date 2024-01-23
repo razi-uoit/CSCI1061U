@@ -258,7 +258,7 @@ int main()
 }
 ```
 
-8. Working with Character arrays
+7. Working with Character arrays
 ```
 	#include<iostream>
 
@@ -396,7 +396,28 @@ int main()
 	    return 0;
 	}
 ```
-5. Dynamic Memory for Objects
+The above program can be updated by creating array of objects
+```
+	int main()
+	{
+	    Vehicle vehicles[5] = {
+         	 Vehicle("Toyota RAV 4", 1234),
+        	 Vehicle("Honda CRV", 134),
+        	 Vehicle("Audi A8", 3333),
+        	 Vehicle("Tesla Model Y", 1111),
+        	 Vehicle("BMW Series 7", 4444),
+    		};
+    
+   	 for (int i=0; i<5; i++)
+   	 {
+   	     vehicles[i].display();
+  	  }
+    
+
+   	 return 0;
+	}
+```
+8. Dynamic Memory for Objects
 ```
 	#include <iostream>
 	using namespace std;
@@ -429,7 +450,29 @@ int main()
 		return 0;
 	}
 ```
-6. Memory Leak
+
+The above code can be updated by creating an array of Vehicle objects in the heap memory
+```
+	int main()
+	{
+    		Vehicle *vehicles = new Vehicle[5]{
+         		Vehicle("Toyota RAV 4", 1234),
+         		Vehicle("Honda CRV", 134),
+         		Vehicle("Audi A8", 3333),
+         		Vehicle("Tesla Model Y", 1111),
+         		Vehicle("BMW Series 7", 4444),
+    		};
+    
+    		for (int i=0; i<5; i++)
+    		{
+		        vehicles[i].display();
+		}
+    
+
+	    return 0;
+	}
+```
+9. Memory Leak
 ```
 	int main()
 	{
@@ -446,7 +489,7 @@ int main()
 		return 0;
 	}
 ```
-7. Memory Deallocation
+10. Memory Deallocation
 ```
 	int main()
 	{
@@ -465,7 +508,7 @@ int main()
 		return 0;
 	}
 ```	
-8. Memory Deallocation with Arrays
+11. Memory Deallocation with Arrays
 ```
 	int main()
 	{
@@ -486,7 +529,7 @@ int main()
 		return 0;
 	}
 ```
-9. Memory Leaks in Functions
+12. Memory Leaks in Functions
 ```
 	void someFunction()
 	{
@@ -497,4 +540,62 @@ int main()
 		someFunction();
 		return 0;
 	}
+```
+13. Let's update our Vehicle class to allocate and deallocate dynamic memory
+```
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Vehicle
+{
+    private:
+    char * name;
+    int kms;
+    
+    public:
+    Vehicle(const char * name, int kms)
+    {
+        this->name = new char[strlen(name)];
+        strcpy(this->name,name);
+        this->kms = kms;
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+        cout <<"KMs: "<<this->kms<<endl;
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+};
+
+void display(Vehicle *v)
+{
+    for (int i=0; i<5; i++)
+    {
+        v[i].display();
+    }
+}
+
+
+int main()
+{
+    Vehicle *vehicles = new Vehicle[5]{
+         Vehicle("Toyota RAV 4", 1234),
+         Vehicle("Honda CRV", 134),
+         Vehicle("Audi A8", 3333),
+         Vehicle("Tesla Model Y", 1111),
+         Vehicle("BMW Series 7", 4444),
+    };
+    
+    display(vehicles);
+    
+    delete[] vehicles;
+    
+
+    return 0;
+}
 ```
