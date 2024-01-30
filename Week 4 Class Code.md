@@ -521,7 +521,112 @@
 	}
 ```
 
-10. Friend functions are used to allow friends of the class to use its private and protected members.
+10. Converting the Numbers class to have += and + operators as member functions
+```
+	#include <iostream>
+	#include <cstring>
+
+	using namespace std;
+
+	class Numbers
+	{
+	    private:
+	    int *numbers;
+	    int size;
+    
+    	public:
+	    Numbers(int * n, int s)
+	    {
+        	size = s;
+	        numbers = new int[size];
+        	for (int i=0; i<size; i++)
+	        {
+        	    numbers[i] = n[i];
+	        }
+	    }
+	    ~Numbers()
+	    {
+        	delete[] numbers;
+	    }
+	    int getSize()
+	    {
+        	return size;
+	    }
+	    int * getNumbers()
+	    {
+        	return numbers;
+	    }
+	    void setNumbers(int n)
+	    {
+        	for (int i=0; i<size; i++)
+	        {
+        	    numbers[i] = numbers[i] + n;
+	        }
+	    }
+        Numbers& operator+=(int i)
+        {
+            setNumbers(i);
+            return *this;
+        }
+        int * operator+(Numbers& n1)
+        {
+            int *obj = new int[size];
+            int temp = 0;
+            for (int i=0; i<size; i++)
+            {
+                temp = getNumbers()[i] + n1.getNumbers()[i];
+                obj[i] = temp;
+            }
+            return obj;
+        }
+    };
+
+	ostream& operator<<(ostream& out, Numbers &n)
+	{
+	    for (int i=0; i<n.getSize(); i++)
+	    {
+        	out <<n.getNumbers()[i]<<"\t";
+	    }
+	    return out;
+	}
+
+	int main()
+	{
+	    int arr1[5] = {2, 4, 6, 8, 10};
+	    int arr2[5] = {1, 2, 3, 4, 5};
+    
+	    int size1 = sizeof(arr1)/sizeof(arr1[0]);
+	    int size2 = sizeof(arr2)/sizeof(arr2[0]);
+    
+	    Numbers numbers1 = Numbers(arr1, size1);
+	    Numbers numbers2 = Numbers(arr2, size2);
+        
+	    cout <<"Array 1: "<<numbers1<<endl;
+	    cout <<"Array 2: "<<numbers2<<endl;
+    
+	    int * obj = numbers1+numbers2;
+    
+	    cout <<"\nSum of arrays: "<<endl;
+    
+	    for (int i=0; i<size1; i++)
+	    {
+        	cout <<obj[i]<<"\t";
+	    }
+    
+	    cout <<endl;
+    
+	    delete[] obj;
+    
+	    cout <<"Testing += operator..."<<endl;
+    
+	    numbers1+=2;
+    
+    	    cout <<"\nModified Array 1: "<<numbers1<<endl;
+    
+            return 0;
+	}
+```
+11. Friend functions are used to allow friends of the class to use its private and protected members.
 ```
 	class Vehicle
 	{
@@ -565,7 +670,7 @@
 		return 0;
 	}
 ```
-11. Friend Functions can be handy with operator overloading
+12. Friend Functions can be handy with operator overloading
 ```
 	class Vehicle
 	{
