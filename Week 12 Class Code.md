@@ -1,817 +1,1098 @@
-# Week 5 Class Code: Exception Handling and Modular Programming
+# Week 12 : Deep and Shallow Copy
 
-1. The program below would break because of dividing by 0
+1. Provided the following code will produce an error as name pointer would try to delete memory location already deallocated by the compiler:
 ```
-	#include <iostream>
-	using namespace std;
+#include <iostream>
+#include <cstring>
 
-	int main()
-	{
-		int number1, number2;
+using namespace std;
+class Vehicle
+{
+    private:
+    const char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        this->name = name;
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+int main()
+{
+    Vehicle v = Vehicle("Toyota");
+    v.display();
+    return 0;
+}
+```
+
+2. This problem can be solved by copying the elements one by one manually
+```
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+
+class Vehicle
+{
+    private:
+    char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        for (int i=0; i<size; i++)
+        {
+            this->name[i] = name[i];
+        }
+        this->name[size] = '\0';
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+int main()
+{
+    Vehicle v = Vehicle("Toyota");
+    v.display();
+    return 0;
+}
+```
+3. strcpy is another way of doing the copy which would avoid such errors
+```
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+
+class Vehicle
+{
+    private:
+    char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+int main()
+{
+    Vehicle v = Vehicle("Toyota");
+    v.display();
+    return 0;
+}
+```
+4. Copying an object through a pointer would mean you are making that pointer point to that object is the memory and hence changing anything through that pointer would result in changing that particular object. Code below will throw an error:
+```
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+
+class Vehicle
+{
+    private:
+    char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+int main()
+{
+    Vehicle v = Vehicle("Toyota");
+    v.display();
+    
+    Vehicle copy = v;
+    copy.display();
+    return 0;
+}
+```
+5. Using copy constructor would help coyping the values properly
+```
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+
+class Vehicle
+{
+    private:
+    char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+int main()
+{
+    Vehicle v = Vehicle("Toyota");
+    v.display();
+    
+    Vehicle copy = v;
+    copy.display();
+    return 0;
+}
+```
+6. We can also have these two object hold completely different values for name
+```
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+
+class Vehicle
+{
+    private:
+    char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
+
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+int main()
+{
+    Vehicle v = Vehicle("Toyota");
+    v.display();
+    
+    Vehicle copy = v;
+    copy.setName("Honda");
+    copy.display();
+    
+    v.display();
+    return 0;
+}
+```
+7. Lets now create a copy object using parameterized constructor and then copy the object to display. Below will produce an error:
+```
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+
+class Vehicle
+{
+    private:
+    char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
+
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+int main()
+{
+    Vehicle v = Vehicle("Toyota");
+    v.display();
+    
+    Vehicle copy = Vehicle("Honda");
+    copy = v;
+    copy.display();
+    
+    v.display();
+    return 0;
+}
+```
+8. In order to solve the above problem, we have to overload assignment operator to do the required operation of allocating the new memory
+```
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+
+class Vehicle
+{
+    private:
+    char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    Vehicle& operator=(const Vehicle& other)
+    {
+        if (this != &other)
+        {
+            delete[] this->name;
+            
+            int size = strlen(other.name);
+            this->name = new char[size + 1];
+            strcpy(this->name, other.name);
+        }
+        return *this;
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
+
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+int main()
+{
+    Vehicle v = Vehicle("Toyota");
+    v.display();
+    
+    Vehicle copy = Vehicle("Honda");
+    copy = v;
+    copy.display();
+    
+    v.display();
+    return 0;
+}
+```
+9. This is called Rule of 3:
+
+The rule states that if a class defines one (or more) of the following three special member functions, it should explicitly define all three:
+
+- `Destructor`: Responsible for releasing resources acquired by an object. If a class dynamically allocates memory, it should have a destructor to deallocate that memory to prevent memory leaks.
+
+- `Copy Constructor`: Responsible for creating a new object that is a copy of an existing object. If a class dynamically allocates memory, a copy constructor is necessary to perform a deep copy of the dynamically allocated resources.
+
+- `Copy Assignment Operator`: Responsible for assigning one object to another of the same type. If a class dynamically allocates memory, the default assignment operator performs a shallow copy, which may lead to memory leaks or double deletion. Hence, a custom copy assignment operator is needed to ensure proper resource management.
 	
-		cout << "Enter number 1: ";
-		cin >> number1;
-
-		cout << "Enter number 2: ";
-		cin >> number2;
-
-		cout << "Result: " << number1 / number2;
-
-		return 0;
-	}
+10. Lets now see how Deep and Shallow copy work with Inheritance. Below code should work fine without errors and memory leaks.
 ```
-2. To fix the above program, we can use Exception Handling
-```
-	#include <iostream>
-	using namespace std;
+#include <iostream>
+#include <cstring>
 
-	int division(int numerator, int denominator)
-	{
-		return numerator / denominator;
-	}
-
-	int main()
-	{
-		int number1, number2;
-
-		cout << "Enter number 1: ";
-		cin >> number1;
-
-		cout << "Enter number 2: ";
-		cin >> number2;
-
-		try
-		{
-			if (number2 == 0)
-			{
-				throw "Error";
-			}
-			else
-			{
-				int result = division(number1, number2);
-				cout << "Result: " << endl;
-			}
-		
-		}
-		catch (const char * ex)
-		{
-			cout << "Cannot divide by zero" << endl;
-		}
-		return 0;
-	}
-```
-	You can also throw an exception code as integer
-```
-	#include <iostream>
-	using namespace std;
-
-	int division(int numerator, int denominator)
-	{
-		return numerator / denominator;
-	}
-
-	int main()
-	{
-		int number1, number2;
-
-		cout << "Enter number 1: ";
-		cin >> number1;
-
-		cout << "Enter number 2: ";
-		cin >> number2;
-
-		try
-		{
-			if (number2 == 0)
-			{
-				throw 1001;
-			}
-			else
-			{
-				int result = division(number1, number2);
-				cout << "Result: " << endl;
-			}
-		
-		}
-		catch (const char * ex)
-		{
-			cout << "Cannot divide by zero" << endl;
-		}
-		catch (int ex)
-		{
-			cout << "Error Code: " << ex << endl;
-		}
-	
-	return 0;
-	}
-```
-3. You can catch exceptions in general as well
-```
-	#include <iostream>
-	using namespace std;
-
-	int division(int numerator, int denominator)
-	{
-		return numerator / denominator;
-	}
-
-	int main()
-	{
-		int number1, number2;
-
-		cout << "Enter number 1: ";
-		cin >> number1;
-
-		cout << "Enter number 2: ";
-		cin >> number2;
-
-		try
-		{
-			if (number2 == 0)
-			{
-				throw 1001;
-			}
-			else
-			{
-				int result = division(number1, number2);
-				cout << "Result: " << endl;
-			}
-		
-		}
-		catch (const char * ex)
-		{
-			cout << "Cannot divide by zero" << endl;
-		}
-		catch (int ex)
-		{
-			cout << "Error Code: " << ex << endl;
-		}
-		catch (...)
-		{
-			cout << "An exception occured" << endl;
-		}
-
-	
-		return 0;
-	}
-```
-3. Out of Range Exception
-
-	The code below will crash the program by throwing an exception
-```
-	#include <iostream>
-	#include <vector>
-	using namespace std;
-
-	int main()
-	{
-		vector<int> v = { 1, 2 };
-		cout << v.at(2) << endl;
-
-		return 0;
-	}
-```
-	Above can be fixed in general using below code:
-```
-	#include <iostream>
-	#include <vector>
-	using namespace std;
-
-	int main()
-	{
-		vector<int> v = { 1, 2 };
-
-		try
-		{
-			cout << v.at(2) << endl;
-		}
-		catch (...)
-		{
-			cout << "Exception occurred" << endl;
-		}
-
-		return 0;
-	}
-```
-4. Uptil now, we have been programming like below:
-```
-	#include <iostream>
-	using namespace std;
-
-	class Vehicle
-	{
-	private:
-		string name;
-		int kms;
-	public:
-		Vehicle()
-		{
-			name = "";
-			kms = 0;
-		}
-		Vehicle(string name, int kms)
-		{
-			this->name = name;
-			this->kms = kms;
-		}
-		string getName()
-		{
-			return this->name;
-		}
-		int getKms()
-		{	
-			return this->kms;
-		}
-		void display()
-		{
-			cout << "Name: " << this->name << ", KMs: " << this->kms << endl;
-		}
-	};
-
-	int main()
-	{
-		Vehicle vehicle = Vehicle("Toyota Rav4", 1234);
-		vehicle.display();
-		return 0;
-	}
-```
-	To use modular programming, we program modules.
-
-	`Vehicle.h`
-```
-	#pragma once
-	#include <iostream>
-	using namespace std;
-	class Vehicle
-	{
-	private:
-		string name;
-		int kms;
-	public:
-		Vehicle();
-		Vehicle(string name, int kms);
-		string getName();
-		int getKms();
-		void display();
-	};
-```
-	`Vehicle.cpp`
-```
-	#include "Vehicle.h"
-
-	Vehicle::Vehicle()
-	{
-		name = "";
-		kms = 0;
-	}
-	Vehicle::Vehicle(string name, int kms)
-	{
-		this->name = name;
-		this->kms = kms;
-	}
-	string Vehicle::getName()
-	{
-		return this->name;
-	}
-	int Vehicle::getKms()
-	{
-		return this->kms;
-	}
-	void Vehicle::display()
-	{
-		cout << "Name: " << this->name << ", KMs: " << this->kms << endl;
-	}
-```
-	`main.cpp`
-```
-	#include "Vehicle.h"
-
-	int main()
-	{
-		Vehicle vehicle = Vehicle("Toyota Rav4", 1234);
-		vehicle.display();
-		return 0;
-	}
-
-```
-Converting above program from string to dynamic character array
-
-	`Vehicle.h`
-```
-	#include<iostream>
-	using namespace std;
-
-	class Vehicle
-	{
-	    private:
-	    char * name;
-	    int kms;
+using namespace std;
+class Vehicle
+{
+    protected:
+    char * name;
     
-    	public:
-	    Vehicle(const char * name, int kms);
-	    void display();
-	    char * getName();
-	    int getKMs();
-	    ~Vehicle();
-	};
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    Vehicle& operator=(const Vehicle& other)
+    {
+        if (this != &other)
+        {
+            delete[] this->name;
+            
+            int size = strlen(other.name);
+            this->name = new char[size + 1];
+            strcpy(this->name, other.name);
+        }
+        return *this;
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
+
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+class Car: public Vehicle
+{
+    private:
+    char * type;
+    public:
+    Car(const char * name, const char * type): Vehicle(name)
+    {
+        int size = strlen(type);
+        this->type = new char[size + 1];
+        strcpy(this->type, type);
+    }
+    ~Car()
+    {
+        delete[] this->type;
+    }
+    void display()
+    {
+        Vehicle::display();
+        cout <<"Type: "<<this->type<<endl;
+    }
+};
+
+int main()
+{
+    Car car = Car("Toyota", "Sedan");
+    car.display();
+    return 0;
+}
 ```
-	`Vehicle.cpp`
+11. When we try to copy objects of a child, we start getting errors because of the same reason as we had errors without inheritance and vehicle object was copied:
 ```
-	#include "Vehicle.h"
-	#include<cstring>
+#include <iostream>
+#include <cstring>
 
-	Vehicle::Vehicle(const char * name, int kms)
-	{	
-	    int size = strlen(name);
-	    this->name = new char[size + 1];
+using namespace std;
+
+
+class Vehicle
+{
+    protected:
+    char * name;
     
-    	    for (int i=0; i<size; i++)
-	    {
-        	this->name[i] = name[i];
-	    }
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    Vehicle& operator=(const Vehicle& other)
+    {
+        if (this != &other)
+        {
+            delete[] this->name;
+            
+            int size = strlen(other.name);
+            this->name = new char[size + 1];
+            strcpy(this->name, other.name);
+        }
+        return *this;
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
+
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+class Car: public Vehicle
+{
+    private:
+    char * type;
+    public:
+    Car(const char * name, const char * type): Vehicle(name)
+    {
+        int size = strlen(type);
+        this->type = new char[size + 1];
+        strcpy(this->type, type);
+    }
+    ~Car()
+    {
+        delete[] this->type;
+    }
+    void display()
+    {
+        Vehicle::display();
+        cout <<"Type: "<<this->type<<endl;
+    }
+};
+
+int main()
+{
+    Car car = Car("Toyota", "Sedan");
+    car.display();
     
-            this->kms = kms;
-	}
-	void Vehicle::display()
-	{
-	    cout <<"Name: "<<this->name<<endl;
-	    cout <<"Kms: "<<this->kms<<endl;
-	}
-	char * Vehicle::getName()
-	{
-	    return this->name;
-	}
-	int Vehicle::getKMs()
-	{
-	    return this->kms;
-	}
-	Vehicle::~Vehicle()
-	{
-	    delete[] this->name;
-	}
+    Car copy = car;
+    copy.display();
+    return 0;
+}
 ```
-	`main.cpp`
+12. In order to solve this problem, we have to introduce copy constructor in the child class as well:
 ```
-	#include "Vehicle.h"
+#include <iostream>
+#include <cstring>
 
-	int main()
-	{
-	    Vehicle vehicle = Vehicle("Toyota", 1234);
-	    vehicle.display();
-	   return 0;
-	}
+using namespace std;
+
+
+class Vehicle
+{
+    protected:
+    char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    Vehicle& operator=(const Vehicle& other)
+    {
+        if (this != &other)
+        {
+            delete[] this->name;
+            
+            int size = strlen(other.name);
+            this->name = new char[size + 1];
+            strcpy(this->name, other.name);
+        }
+        return *this;
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
+
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+class Car: public Vehicle
+{
+    private:
+    char * type;
+    public:
+    Car(const char * name, const char * type): Vehicle(name)
+    {
+        int size = strlen(type);
+        this->type = new char[size + 1];
+        strcpy(this->type, type);
+    }
+    Car(const Car& other): Vehicle(other)
+    {
+        int size = strlen(other.type);
+        this->type = new char[size + 1];
+        strcpy(this->type, other.type);
+    }
+    
+    ~Car()
+    {
+        delete[] this->type;
+    }
+    void display()
+    {
+        Vehicle::display();
+        cout <<"Type: "<<this->type<<endl;
+    }
+};
+
+int main()
+{
+    Car car = Car("Toyota", "Sedan");
+    car.display();
+    
+    Car copy = car;
+    copy.display();
+    return 0;
+}
 ```
-5. Modular Programming helps keeping global functions as well:
-
-	`Vehicle.h`
+13. What if we create an object of child class using its parameterized constructor and then copy objects. Below will produce an error:
 ```
-	#include<iostream>
-	using namespace std;
+#include <iostream>
+#include <cstring>
 
-	class Vehicle
-	{
-	    private:
-	    char * name;
-	    int kms;
+using namespace std;
+
+
+class Vehicle
+{
+    protected:
+    char * name;
     
-    	public:
-	    Vehicle(const char * name, int kms);
-	    void display();
-	    char * getName();
-	    int getKMs();
-	    ~Vehicle();
-	};
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    Vehicle& operator=(const Vehicle& other)
+    {
+        if (this != &other)
+        {
+            delete[] this->name;
+            
+            int size = strlen(other.name);
+            this->name = new char[size + 1];
+            strcpy(this->name, other.name);
+        }
+        return *this;
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
 
-	void display(Vehicle *vehicles, int size);
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+class Car: public Vehicle
+{
+    private:
+    char * type;
+    public:
+    Car(const char * name, const char * type): Vehicle(name)
+    {
+        int size = strlen(type);
+        this->type = new char[size + 1];
+        strcpy(this->type, type);
+    }
+    Car(const Car& other): Vehicle(other)
+    {
+        int size = strlen(other.type);
+        this->type = new char[size + 1];
+        strcpy(this->type, other.type);
+    }
+    
+    ~Car()
+    {
+        delete[] this->type;
+    }
+    void display()
+    {
+        Vehicle::display();
+        cout <<"Type: "<<this->type<<endl;
+    }
+};
+
+int main()
+{
+    Car car = Car("Toyota", "Sedan");
+    car.display();
+    
+    Car copy = Car("Honda", "SUV");
+    copy = car;
+    copy.display();
+    
+    car.display();
+    return 0;
+}
 ```
-
-	`Vehicle.cpp`
+14. In order to overcome this error, we introduce assignment operator overloading:
 ```
-	#include "Vehicle.h"
-	#include<cstring>
+#include <iostream>
+#include <cstring>
 
-	Vehicle::Vehicle(const char * name, int kms)
-	{
-	    int size = strlen(name);
-	    this->name = new char[size + 1];
-    
-	   strcpy(this->name, name);
-    
-    	this->kms = kms;
-	}
-	void Vehicle::display()
-	{
-	    cout <<"Name: "<<this->name<<endl;
-	    cout <<"Kms: "<<this->kms<<endl;
-	}
-	char * Vehicle::getName()
-	{
-	    return this->name;
-	}
-	int Vehicle::getKMs()
-	{
-	    return this->kms;
-	}
-	Vehicle::~Vehicle()
-	{
-	    delete[] this->name;
-	}
+using namespace std;
 
-	void display(Vehicle *vehicles, int size)
-	{   
-	    for (int i=0; i<size; i++)
-	    {
-        	cout <<"Name: "<<vehicles[i].getName()<<endl;
-	        cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
-        	cout <<"******************************"<<endl;
-	    }
- 
-	}
+
+class Vehicle
+{
+    protected:
+    char * name;
+    
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    Vehicle& operator=(const Vehicle& other)
+    {
+        if (this != &other)
+        {
+            delete[] this->name;
+            
+            int size = strlen(other.name);
+            this->name = new char[size + 1];
+            strcpy(this->name, other.name);
+        }
+        return *this;
+    }
+    ~Vehicle()
+    {
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
+
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+class Car: public Vehicle
+{
+    private:
+    char * type;
+    public:
+    Car(const char * name, const char * type): Vehicle(name)
+    {
+        int size = strlen(type);
+        this->type = new char[size + 1];
+        strcpy(this->type, type);
+    }
+    Car(const Car& other): Vehicle(other)
+    {
+        int size = strlen(other.type);
+        this->type = new char[size + 1];
+        strcpy(this->type, other.type);
+    }
+    Car& operator=(const Car& other)
+    {
+        if (this != &other)
+        {
+            Vehicle::operator=(other);
+            delete[] this->type;
+            
+            int size = strlen(other.type);
+            this->type = new char[size + 1];
+            strcpy(this->type, other.type);
+        }
+        return *this;
+    }
+    
+    ~Car()
+    {
+        delete[] this->type;
+    }
+    void display()
+    {
+        Vehicle::display();
+        cout <<"Type: "<<this->type<<endl;
+    }
+};
+
+int main()
+{
+    Car car = Car("Toyota", "Sedan");
+    car.display();
+    
+    Car copy = Car("Honda", "SUV");
+    copy = car;
+    copy.display();
+    
+    car.display();
+    return 0;
+}
 ```
-
-	`main.cpp`
+15. Virtual destructors are handy when it comes to calling the destructors in order. Below code will have a memory leak because Car destructor is never called:
 ```
-	#include "Vehicle.h"
+#include <iostream>
+#include <cstring>
 
-	int main()
-	{
-	    Vehicle vehicles[5] = {
-	        Vehicle("Toyota", 123),
-	        Vehicle("Honda", 132),
-	        Vehicle("Audi", 789),
-        	Vehicle("BMW", 222),
-	        Vehicle("Tesla", 777),
+using namespace std;
+
+
+class Vehicle
+{
+    private:
+    char * name;
     
-    	};
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    Vehicle& operator=(const Vehicle& other)
+    {
+        if (this != &other)
+        {
+            delete[] this->name;
+            
+            int size = strlen(other.name);
+            this->name = new char[size + 1];
+            strcpy(this->name, other.name);
+        }
+        return *this;
+    }
+    ~Vehicle()
+    {
+        cout <<"Vehicle destructor"<<endl;
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
+
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    virtual void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+class Car: public Vehicle
+{
+    private:
+    char * type;
+    public:
+    Car(const char * name, const char * type): Vehicle(name)
+    {
+        int size = strlen(type);
+        this->type = new char[size + 1];
+        strcpy(this->type, type);
+    }
+    Car(const Car& other): Vehicle(other)
+    {
+        int size = strlen(other.type);
+        this->type = new char[size + 1];
+        strcpy(this->type, other.type);
+    }
+    Car& operator=(const Car& other)
+    {
+        if (this != &other)
+        {
+            Vehicle::operator=(other);
+            delete[] this->type;
+            
+            int size = strlen(other.type);
+            this->type = new char[size + 1];
+            strcpy(this->type, other.type);
+        }
+        return *this;
+    }
     
-    	int size = sizeof(vehicles)/sizeof(vehicles[0]);
+    ~Car()
+    {
+        cout <<"Car destructor"<<endl;
+        delete[] this->type;
+    }
+    void display()
+    {
+        Vehicle::display();
+        cout <<"Type: "<<this->type<<endl;
+    }
+};
+
+int main()
+{
+    Vehicle *v = new Car("Toyota", "Sedan");
+    v->display();
     
-	    display(vehicles, size);
-	    return 0;
-	}
+    delete v;
+    return 0;
+}
 ```
-The above program can be modified to store vehicle array in the heap memory as follows:
+16. In order to avoid having such memory leaks, it is important to call destructors in order. Once way to do it is to make Parent destructor virtual.
 ```
-	#include "Vehicle.h"
+#include <iostream>
+#include <cstring>
 
-	int main()
-	{
-	    Vehicle *vehicles = new Vehicle[5]
-	    {
-		        Vehicle("Toyota", 123),
-	        	Vehicle("Honda", 132),
-		        Vehicle("Audi", 789),	
-        		Vehicle("BMW", 222),
-	        	Vehicle("Tesla", 777),
-	    };
+using namespace std;
+
+
+class Vehicle
+{
+    private:
+    char * name;
     
-    	display(vehicles, 5);
+    public:
+    Vehicle(const char * name)
+    {
+        int size = strlen(name);
+        this->name = new char[size + 1];
+        strcpy(this->name, name);
+    }
+    Vehicle(const Vehicle& other)
+    {
+        int size = strlen(other.name);
+        this->name = new char[size + 1];
+        strcpy(this->name, other.name);
+    }
+    Vehicle& operator=(const Vehicle& other)
+    {
+        if (this != &other)
+        {
+            delete[] this->name;
+            
+            int size = strlen(other.name);
+            this->name = new char[size + 1];
+            strcpy(this->name, other.name);
+        }
+        return *this;
+    }
+    virtual ~Vehicle()
+    {
+        cout <<"Vehicle destructor"<<endl;
+        delete[] this->name;
+    }
+    void setName(const char * name)
+    {
+        delete[] this->name;
+
+        int size = strlen(name);
+        this->name = new char[size + 1];
+
+        strcpy(this->name, name);
+    }
+    virtual void display()
+    {
+        cout <<"Name: "<<this->name<<endl;
+    }
+};
+
+class Car: public Vehicle
+{
+    private:
+    char * type;
+    public:
+    Car(const char * name, const char * type): Vehicle(name)
+    {
+        int size = strlen(type);
+        this->type = new char[size + 1];
+        strcpy(this->type, type);
+    }
+    Car(const Car& other): Vehicle(other)
+    {
+        int size = strlen(other.type);
+        this->type = new char[size + 1];
+        strcpy(this->type, other.type);
+    }
+    Car& operator=(const Car& other)
+    {
+        if (this != &other)
+        {
+            Vehicle::operator=(other);
+            delete[] this->type;
+            
+            int size = strlen(other.type);
+            this->type = new char[size + 1];
+            strcpy(this->type, other.type);
+        }
+        return *this;
+    }
     
-    	delete[] vehicles;
-	    return 0;
-	}
+    ~Car()
+    {
+        cout <<"Car destructor"<<endl;
+        delete[] this->type;
+    }
+    void display()
+    {
+        Vehicle::display();
+        cout <<"Type: "<<this->type<<endl;
+    }
+};
 
-```
-6. Operator Overloading would work in a similar manner
-
-	`Vehicle.h`
-```
-	#include<iostream>
-	using namespace std;
-
-	class Vehicle
-	{
-	    private:
-	    char * name;
-	    int kms;
+int main()
+{
+    Vehicle *v = new Car("Toyota", "Sedan");
+    v->display();
     
-    	public:
-	    Vehicle(const char * name, int kms);
-	    void display();
-	    char * getName();
-	    int getKMs();
-	    ~Vehicle();
-	};
-
-	void display(Vehicle *vehicles, int size);
-	ostream& operator<<(ostream& out, Vehicle &vehicle);
-```
-	`Vehicle.cpp`
-```
-	#include "Vehicle.h"
-	#include<cstring>
-
-	Vehicle::Vehicle(const char * name, int kms)
-	{
-	    int size = strlen(name);
-	    this->name = new char[size + 1];
-    
-   	strcpy(this->name, name);
-    
-	    this->kms = kms;
-	}
-	void Vehicle::display()
-	{
-	    cout <<"Name: "<<this->name<<endl;
-	    cout <<"Kms: "<<this->kms<<endl;
-	}
-	char * Vehicle::getName()
-	{
-	    return this->name;
-	}
-	int Vehicle::getKMs()
-	{
-	    return this->kms;
-	}
-	Vehicle::~Vehicle()
-	{
-	    delete[] this->name;
-	}
-
-	void display(Vehicle *vehicles, int size)
-	{   
-	    for (int i=0; i<size; i++)
-	    {
-	        cout <<"Name: "<<vehicles[i].getName()<<endl;
-        	cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
-	        cout <<"******************************"<<endl;
-	    }
-    
-	}
-
-	ostream& operator<<(ostream& out, Vehicle &vehicle)
-	{
-	    cout <<"Name: "<<vehicle.getName()<<endl;
-	    cout <<"Kms: "<<vehicle.getKMs()<<endl;
-	    return out;
-	}
-```	
-
-	`main.cpp`
-```
-	#include "Vehicle.h"
-
-	int main()
-	{
-    
-	 	Vehicle vehicle = Vehicle("Toyota", 123);
-	    cout <<vehicle<<endl;
-	    return 0;
-	}
-```
-
-	Updating above program to use dynamic arrays of Vehicle with operator overloading
-
-	`Vehicle.h`
-```
-	#include<iostream>
-	using namespace std;
-
-	class Vehicle
-	{
-	    private:
-	    char * name;
-	    int kms;
-    
-    	public:
-	    Vehicle(const char * name, int kms);
-	    void display();
-	    char * getName();
-	    int getKMs();
-	    ~Vehicle();
-	};
-
-	void display(Vehicle *vehicles, int size);
-	ostream& operator<<(ostream& out, Vehicle *vehicles);
-
-
-	Vehicle.cpp
-
-	#include "Vehicle.h"
-	#include<cstring>
-
-	Vehicle::Vehicle(const char * name, int kms)
-	{
-	    int size = strlen(name);
-	    this->name = new char[size + 1];
-    
-	   strcpy(this->name, name);
-    
-	    this->kms = kms;
-	}
-	void Vehicle::display()
-	{
-	    cout <<"Name: "<<this->name<<endl;
-	    cout <<"Kms: "<<this->kms<<endl;
-	}
-	char * Vehicle::getName()
-	{
-	    return this->name;
-	}
-	int Vehicle::getKMs()
-	{
-	    return this->kms;
-	}
-	Vehicle::~Vehicle()
-	{
-	    delete[] this->name;
-	}
-
-	void display(Vehicle *vehicles, int size)
-	{   
-	    for (int i=0; i<size; i++)
-	    {
-        	cout <<"Name: "<<vehicles[i].getName()<<endl;
-	        cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
-        	cout <<"******************************"<<endl;
-	    }
-    
-	}
-
-	ostream& operator<<(ostream& out, Vehicle *vehicles)
-	{
-	    for (int i=0; i<5; i++)
-	    {
-	        out <<"Name: "<<vehicles[i].getName()<<endl;
-        	out <<"KMs: "<<vehicles[i].getKMs()<<endl;
-	        out <<"******************************"<<endl;
-	    }
-	    return out;
-	}
-```
-	`main.cpp`
-```
-	#include "Vehicle.h"
-	#include<cstring>
-
-	Vehicle::Vehicle(const char * name, int kms)
-	{
-	    int size = strlen(name);
-	    this->name = new char[size + 1];
-    
-	   strcpy(this->name, name);
-    
-	    this->kms = kms;
-	}
-	void Vehicle::display()
-	{
-	    cout <<"Name: "<<this->name<<endl;
-	    cout <<"Kms: "<<this->kms<<endl;
-	}
-	char * Vehicle::getName()
-	{
-	    return this->name;
-	}
-	int Vehicle::getKMs()
-	{
-	    return this->kms;
-	}
-	Vehicle::~Vehicle()
-	{
-	    delete[] this->name;
-	}
-
-	void display(Vehicle *vehicles, int size)
-	{   
-	    for (int i=0; i<size; i++)
-	    {
-        	cout <<"Name: "<<vehicles[i].getName()<<endl;
-	        cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
-        	cout <<"******************************"<<endl;
-	    }
-    
-	}
-
-	ostream& operator<<(ostream& out, Vehicle *vehicles)
-	{
-	    for (int i=0; i<5; i++)
-	    {
-	        out <<"Name: "<<vehicles[i].getName()<<endl;
-        	out <<"KMs: "<<vehicles[i].getKMs()<<endl;
-	        out <<"******************************"<<endl;
-	    }
-	    return out;
-	}
-```
-7. Using operator overloading as member function
-
-	`Vehicle.h`
-```
-	#include<iostream>
-	using namespace std;
-
-	class Vehicle
-	{
-	    private:
-	    char * name;
-	    int kms;
-	    int passengers;
-    
-    	public:
-	    Vehicle(const char * name, int kms, int passengers);
-	    void display();
-	    char * getName();
-	    int getKMs();
-	    int getPassengers();
-	    Vehicle& operator+=(int);
-	    ~Vehicle();
-	};
-
-	void display(Vehicle *vehicles, int size);
-	ostream& operator<<(ostream& out, Vehicle *vehicles);
-```
-	`Vehicle.cpp`
-```
-	#include "Vehicle.h"
-	#include<cstring>
-
-	Vehicle::Vehicle(const char * name, int kms, int passengers)
-	{
-	    int size = strlen(name);
-	    this->name = new char[size + 1];
-    
-	   strcpy(this->name, name);
-    
-    	this->kms = kms;
-	    this->passengers = passengers;
-	}
-	void Vehicle::display()
-	{
-	    cout <<"Name: "<<this->name<<endl;
-	    cout <<"Kms: "<<this->kms<<endl;
-	}
-	char * Vehicle::getName()
-	{
-	    return this->name;
-	}
-	int Vehicle::getKMs()
-	{
-	    return this->kms;
-	}
-	int Vehicle::getPassengers()
-	{
-	    return this->passengers;
-	}
-	Vehicle::~Vehicle()
-	{
-	    delete[] this->name;
-	}
-	Vehicle& Vehicle::operator+=(int i)
-	{
-	    this->passengers += i;
-	    return *this;
-	}
-
-	void display(Vehicle *vehicles, int size)
-	{   
-	    for (int i=0; i<size; i++)
-	    {
-	        cout <<"Name: "<<vehicles[i].getName()<<endl;
-        	cout <<"KMs: "<<vehicles[i].getKMs()<<endl;
-	        cout <<"Passengers: "<<vehicles[i].getPassengers()<<endl;
-        	cout <<"******************************"<<endl;
-	    }   
-	}
-
-	ostream& operator<<(ostream& out, Vehicle *vehicles)
-	{
-	    for (int i=0; i<5; i++)
-	    {
-	        out <<"Name: "<<vehicles[i].getName()<<endl;
-        	out <<"KMs: "<<vehicles[i].getKMs()<<endl;
-	        cout <<"Passengers: "<<vehicles[i].getPassengers()<<endl;
-        	out <<"******************************"<<endl;
-	    }
-	    return out;	
-	}
-```
-	`main.cpp`
-```
-	#include "Vehicle.h"
-
-	int main()
-	{
-	    Vehicle *vehicles = new Vehicle[5]
-	    {
-	        Vehicle("Toyota", 123, 1),
-	        Vehicle("Honda", 132, 4),
-	        Vehicle("Audi", 789, 5),
-        	Vehicle("BMW", 222, 2),
-	        Vehicle("Tesla", 777, 3),
-	    };
-    
-    	cout <<vehicles<<endl;
-    
-	    for (int i=0; i<5; i++)
-	    {
-        	vehicles[i]+=2;
-	    }
-    
-    	cout <<"After incrementing..."<<endl;
-	    cout <<vehicles<<endl;
-    
-    	delete[] vehicles;
-	
-	    return 0;
-	}
+    delete v;
+    return 0;
+}
 ```
